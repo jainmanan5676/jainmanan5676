@@ -1,0 +1,208 @@
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/assets/fonts/PlusJakartaSans.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+
+/* ──────────────────────────────────────────────────────────────
+   Global dark-mode overrides for hardcoded Tailwind gray classes.
+   Placed between @components and @utilities so explicit dark:
+   variants (which come in @utilities) still win.
+────────────────────────────────────────────────────────────── */
+.dark .bg-white {
+  background-color: rgb(17 24 39);
+}
+.dark .bg-gray-50 {
+  background-color: rgb(31 41 55);
+}
+.dark .bg-gray-100 {
+  background-color: rgb(55 65 81);
+}
+.dark .text-gray-900,
+.dark .text-black {
+  color: rgb(243 244 246);
+}
+.dark .text-gray-800 {
+  color: rgb(229 231 235);
+}
+.dark .text-gray-700 {
+  color: rgb(209 213 219);
+}
+.dark .text-gray-600 {
+  color: rgb(156 163 175);
+}
+.dark .border-gray-200 {
+  border-color: rgb(55 65 81);
+}
+.dark .border-gray-300 {
+  border-color: rgb(75 85 99);
+}
+/* Table header rows that use bg-gray-50 */
+.dark thead tr {
+  background-color: rgb(31 41 55);
+}
+.dark thead th {
+  color: rgb(209 213 219);
+}
+/* Input fields and date pickers */
+.dark input[type="date"],
+.dark input[type="text"],
+.dark input[type="number"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark textarea {
+  background-color: rgb(31 41 55);
+  color: rgb(229 231 235);
+  border-color: rgb(75 85 99);
+}
+/* Stat cards with colored backgrounds in dark mode — keep text readable */
+.dark .bg-blue-50 {
+  background-color: rgb(23 37 84);
+}
+.dark .bg-green-50 {
+  background-color: rgb(20 52 45);
+}
+.dark .bg-red-50 {
+  background-color: rgb(67 20 20);
+}
+.dark .bg-amber-50 {
+  background-color: rgb(69 46 14);
+}
+.dark .text-blue-800 {
+  color: rgb(147 197 253);
+}
+.dark .text-green-800 {
+  color: rgb(134 239 172);
+}
+.dark .text-red-800 {
+  color: rgb(252 165 165);
+}
+.dark .text-amber-800 {
+  color: rgb(252 211 77);
+}
+/* Dividers */
+.dark .divide-gray-200 > * + * {
+  border-color: rgb(55 65 81);
+}
+/* Code / mono text */
+.dark .font-mono {
+  color: rgb(209 213 219);
+}
+
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0.98 0.005 250;
+    --foreground: 0.12 0.01 250;
+    --card: 1 0 0;
+    --card-foreground: 0.12 0.01 250;
+    --popover: 1 0 0;
+    --popover-foreground: 0.12 0.01 250;
+    --primary: 0.52 0.22 255;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.94 0.03 255;
+    --secondary-foreground: 0.2 0.05 255;
+    --muted: 0.94 0.01 255;
+    --muted-foreground: 0.5 0.02 255;
+    --accent: 0.92 0.04 255;
+    --accent-foreground: 0.18 0.06 255;
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 1 0 0;
+    --border: 0.88 0.01 255;
+    --input: 0.88 0.01 255;
+    --ring: 0.52 0.22 255;
+    --radius: 0.5rem;
+    --chart-1: 0.52 0.22 255;
+    --chart-2: 0.6 0.18 145;
+    --chart-3: 0.68 0.2 55;
+    --chart-4: 0.58 0.2 290;
+    --chart-5: 0.58 0.22 25;
+    --sidebar-background: 0.06 0 0;
+    --sidebar-foreground: 0.9 0 0;
+    --sidebar-primary: 1 0 0;
+    --sidebar-primary-foreground: 0.06 0 0;
+    --sidebar-accent: 0.15 0 0;
+    --sidebar-accent-foreground: 0.9 0 0;
+    --sidebar-border: 0.18 0 0;
+    --sidebar-ring: 0.5 0 0;
+  }
+
+  .dark {
+    --background: 0.08 0 0;
+    --foreground: 0.95 0 0;
+    --card: 0.12 0 0;
+    --card-foreground: 0.95 0 0;
+    --popover: 0.12 0 0;
+    --popover-foreground: 0.95 0 0;
+    --primary: 0.52 0.22 255;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.18 0 0;
+    --secondary-foreground: 0.9 0 0;
+    --muted: 0.18 0 0;
+    --muted-foreground: 0.6 0 0;
+    --accent: 0.18 0 0;
+    --accent-foreground: 0.9 0 0;
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 1 0 0;
+    --border: 0.22 0 0;
+    --input: 0.22 0 0;
+    --ring: 0.52 0.22 255;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  }
+}
+
+/* Blue theme */
+body.bg-blue-theme {
+  background-color: #1e3a5f !important;
+  color: white !important;
+}
+body.bg-blue-theme .bg-white,
+body.bg-blue-theme [class*="bg-gray-50"],
+body.bg-blue-theme [class*="bg-gray-100"],
+body.bg-blue-theme .bg-background,
+body.bg-blue-theme .bg-card {
+  background-color: #2a4a7f !important;
+  color: white !important;
+}
+body.bg-blue-theme .text-black,
+body.bg-blue-theme .text-gray-900,
+body.bg-blue-theme .text-gray-800,
+body.bg-blue-theme .text-gray-700,
+body.bg-blue-theme .text-gray-600,
+body.bg-blue-theme .text-foreground {
+  color: white !important;
+}
+body.bg-blue-theme .text-muted-foreground,
+body.bg-blue-theme .text-gray-500,
+body.bg-blue-theme .text-gray-400 {
+  color: #b0c4de !important;
+}
+body.bg-blue-theme .border-gray-200,
+body.bg-blue-theme .border-gray-300,
+body.bg-blue-theme .border-border {
+  border-color: #3a5a8f !important;
+}
+body.bg-blue-theme input,
+body.bg-blue-theme textarea,
+body.bg-blue-theme select {
+  background-color: #1a3050 !important;
+  color: white !important;
+  border-color: #3a5a8f !important;
+}
+body.bg-blue-theme .min-h-screen {
+  background-color: #1e3a5f !important;
+}
