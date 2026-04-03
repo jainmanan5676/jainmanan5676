@@ -2274,294 +2274,311 @@ export default function FacultyPortal({
             <TabsContent value="messages">
               <MessagesPage />
             </TabsContent>
-          </Tabs>
-        </main>
-      </div>
-
-      {/* MENTORSHIP */}
-      <TabsContent value="mentorship">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold">My Mentees</h2>
-            <Button
-              size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => setShowAddMentee((v) => !v)}
-              data-ocid="faculty_portal.mentorship.open_modal_button"
-            >
-              + Add Mentee
-            </Button>
-          </div>
-          {showAddMentee && (
-            <Card data-ocid="faculty_portal.mentorship.modal">
-              <CardContent className="pt-4 space-y-3">
-                <h3 className="font-semibold text-sm">Add New Mentee</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs text-gray-500 dark:text-gray-400">
-                      Student Name
-                    </Label>
-                    <Input
-                      className="mt-1 h-8 text-sm"
-                      value={newMentee.name}
-                      onChange={(e) =>
-                        setNewMentee((p) => ({ ...p, name: e.target.value }))
-                      }
-                      placeholder="Full name"
-                      data-ocid="faculty_portal.mentorship.name_input"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-500 dark:text-gray-400">
-                      Roll Number
-                    </Label>
-                    <Input
-                      className="mt-1 h-8 text-sm"
-                      value={newMentee.rollNo}
-                      onChange={(e) =>
-                        setNewMentee((p) => ({ ...p, rollNo: e.target.value }))
-                      }
-                      placeholder="e.g. CS2023042"
-                      data-ocid="faculty_portal.mentorship.roll_input"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-2">
+            {/* MENTORSHIP */}
+            <TabsContent value="mentorship">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold">My Mentees</h2>
                   <Button
                     size="sm"
-                    className="bg-black text-white hover:bg-gray-900 text-xs"
-                    onClick={() => {
-                      if (!newMentee.name) return;
-                      setMentees((prev) => [
-                        ...prev,
-                        {
-                          id: Date.now(),
-                          name: newMentee.name,
-                          rollNo: newMentee.rollNo,
-                          attendance: 85,
-                          gpa: 8.0,
-                          notes: "",
-                        },
-                      ]);
-                      setNewMentee({ name: "", rollNo: "" });
-                      setShowAddMentee(false);
-                    }}
-                    data-ocid="faculty_portal.mentorship.confirm_button"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => setShowAddMentee((v) => !v)}
+                    data-ocid="faculty_portal.mentorship.open_modal_button"
                   >
-                    Add Mentee
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="text-xs"
-                    onClick={() => setShowAddMentee(false)}
-                    data-ocid="faculty_portal.mentorship.cancel_button"
-                  >
-                    Cancel
+                    + Add Mentee
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          )}
-          {mentees.map((m, i) => (
-            <Card
-              key={m.id}
-              data-ocid={`faculty_portal.mentorship.item.${i + 1}`}
-            >
-              <CardContent className="pt-4">
-                <button
-                  type="button"
-                  className="w-full flex items-center justify-between cursor-pointer text-left"
-                  onClick={() =>
-                    setExpandedMentee(expandedMentee === m.id ? null : m.id)
-                  }
-                >
-                  <div>
-                    <p className="font-semibold">{m.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {m.rollNo}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Attendance:{" "}
-                      <span
-                        className={
-                          m.attendance >= 75
-                            ? "text-gray-600 dark:text-gray-300 font-semibold"
-                            : "text-gray-600 dark:text-gray-300 font-semibold"
-                        }
-                      >
-                        {m.attendance}%
-                      </span>
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      GPA: <span className="font-semibold">{m.gpa}</span>
-                    </span>
-                    <span className="text-xs border rounded px-2 py-0.5">
-                      {expandedMentee === m.id ? "Hide" : "View"}
-                    </span>
-                  </div>
-                </button>
-                {expandedMentee === m.id && (
-                  <div className="mt-3 pt-3 border-t space-y-2">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">
-                          Attendance:
-                        </span>{" "}
-                        <span
-                          className={
-                            m.attendance >= 75
-                              ? "text-gray-600 dark:text-gray-300 font-semibold"
-                              : "text-gray-600 dark:text-gray-300 font-semibold"
-                          }
-                        >
-                          {m.attendance}%
-                        </span>
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">
-                          GPA:
-                        </span>{" "}
-                        <span className="font-semibold">{m.gpa} / 10.0</span>
-                      </div>
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-500 dark:text-gray-400">
-                        Notes
-                      </Label>
-                      <textarea
-                        className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background resize-none"
-                        rows={2}
-                        value={m.notes}
-                        onChange={(e) =>
-                          setMentees((prev) =>
-                            prev.map((x) =>
-                              x.id === m.id
-                                ? { ...x, notes: e.target.value }
-                                : x,
-                            ),
-                          )
-                        }
-                        placeholder="Add notes about this mentee..."
-                        data-ocid={`faculty_portal.mentorship.notes_textarea.${i + 1}`}
-                      />
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </TabsContent>
-
-      {/* CONFERENCES */}
-      <TabsContent value="conferences">
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold">Academic Conferences & Seminars</h2>
-          {conferences.map((conf, i) => (
-            <Card
-              key={conf.id}
-              data-ocid={`faculty_portal.conferences.item.${i + 1}`}
-            >
-              <CardContent className="pt-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <p className="font-semibold text-sm">{conf.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {conf.date} · {conf.location}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      Registration deadline: {conf.deadline}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                    {confRegistered.has(conf.id) ? (
-                      <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                        Registered ✓
-                      </Badge>
-                    ) : (
-                      <Button
-                        size="sm"
-                        className="bg-black text-white hover:bg-gray-900 text-xs"
-                        onClick={() =>
-                          setConfForms((p) => ({
-                            ...p,
-                            [conf.id]: { paperTitle: "", showing: true },
-                          }))
-                        }
-                        data-ocid={`faculty_portal.conferences.button.${i + 1}`}
-                      >
-                        Register
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                {confForms[conf.id]?.showing &&
-                  !confRegistered.has(conf.id) && (
-                    <div className="mt-3 pt-3 border-t space-y-2">
-                      <div>
-                        <Label className="text-xs text-gray-500 dark:text-gray-400">
-                          Paper Title (Optional)
-                        </Label>
-                        <Input
-                          className="mt-1 h-8 text-sm"
-                          value={confForms[conf.id]?.paperTitle || ""}
-                          onChange={(e) =>
-                            setConfForms((p) => ({
-                              ...p,
-                              [conf.id]: {
-                                ...p[conf.id],
-                                paperTitle: e.target.value,
-                              },
-                            }))
-                          }
-                          placeholder="Enter paper/presentation title..."
-                          data-ocid={`faculty_portal.conferences.paper_input.${i + 1}`}
-                        />
+                {showAddMentee && (
+                  <Card data-ocid="faculty_portal.mentorship.modal">
+                    <CardContent className="pt-4 space-y-3">
+                      <h3 className="font-semibold text-sm">Add New Mentee</h3>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs text-gray-500 dark:text-gray-400">
+                            Student Name
+                          </Label>
+                          <Input
+                            className="mt-1 h-8 text-sm"
+                            value={newMentee.name}
+                            onChange={(e) =>
+                              setNewMentee((p) => ({
+                                ...p,
+                                name: e.target.value,
+                              }))
+                            }
+                            placeholder="Full name"
+                            data-ocid="faculty_portal.mentorship.name_input"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-gray-500 dark:text-gray-400">
+                            Roll Number
+                          </Label>
+                          <Input
+                            className="mt-1 h-8 text-sm"
+                            value={newMentee.rollNo}
+                            onChange={(e) =>
+                              setNewMentee((p) => ({
+                                ...p,
+                                rollNo: e.target.value,
+                              }))
+                            }
+                            placeholder="e.g. CS2023042"
+                            data-ocid="faculty_portal.mentorship.roll_input"
+                          />
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
                           className="bg-black text-white hover:bg-gray-900 text-xs"
                           onClick={() => {
-                            setConfRegistered((prev) => {
-                              const n = new Set(prev);
-                              n.add(conf.id);
-                              return n;
-                            });
-                            setConfForms((p) => ({
-                              ...p,
-                              [conf.id]: { ...p[conf.id], showing: false },
-                            }));
+                            if (!newMentee.name) return;
+                            setMentees((prev) => [
+                              ...prev,
+                              {
+                                id: Date.now(),
+                                name: newMentee.name,
+                                rollNo: newMentee.rollNo,
+                                attendance: 85,
+                                gpa: 8.0,
+                                notes: "",
+                              },
+                            ]);
+                            setNewMentee({ name: "", rollNo: "" });
+                            setShowAddMentee(false);
                           }}
-                          data-ocid={`faculty_portal.conferences.confirm_button.${i + 1}`}
+                          data-ocid="faculty_portal.mentorship.confirm_button"
                         >
-                          Confirm Registration
+                          Add Mentee
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
                           className="text-xs"
-                          onClick={() =>
-                            setConfForms((p) => ({
-                              ...p,
-                              [conf.id]: { ...p[conf.id], showing: false },
-                            }))
-                          }
-                          data-ocid={`faculty_portal.conferences.cancel_button.${i + 1}`}
+                          onClick={() => setShowAddMentee(false)}
+                          data-ocid="faculty_portal.mentorship.cancel_button"
                         >
                           Cancel
                         </Button>
                       </div>
-                    </div>
-                  )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </TabsContent>
+                    </CardContent>
+                  </Card>
+                )}
+                {mentees.map((m, i) => (
+                  <Card
+                    key={m.id}
+                    data-ocid={`faculty_portal.mentorship.item.${i + 1}`}
+                  >
+                    <CardContent className="pt-4">
+                      <button
+                        type="button"
+                        className="w-full flex items-center justify-between cursor-pointer text-left"
+                        onClick={() =>
+                          setExpandedMentee(
+                            expandedMentee === m.id ? null : m.id,
+                          )
+                        }
+                      >
+                        <div>
+                          <p className="font-semibold">{m.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {m.rollNo}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            Attendance:{" "}
+                            <span
+                              className={
+                                m.attendance >= 75
+                                  ? "text-gray-600 dark:text-gray-300 font-semibold"
+                                  : "text-gray-600 dark:text-gray-300 font-semibold"
+                              }
+                            >
+                              {m.attendance}%
+                            </span>
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            GPA: <span className="font-semibold">{m.gpa}</span>
+                          </span>
+                          <span className="text-xs border rounded px-2 py-0.5">
+                            {expandedMentee === m.id ? "Hide" : "View"}
+                          </span>
+                        </div>
+                      </button>
+                      {expandedMentee === m.id && (
+                        <div className="mt-3 pt-3 border-t space-y-2">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="text-sm">
+                              <span className="text-gray-500 dark:text-gray-400">
+                                Attendance:
+                              </span>{" "}
+                              <span
+                                className={
+                                  m.attendance >= 75
+                                    ? "text-gray-600 dark:text-gray-300 font-semibold"
+                                    : "text-gray-600 dark:text-gray-300 font-semibold"
+                                }
+                              >
+                                {m.attendance}%
+                              </span>
+                            </div>
+                            <div className="text-sm">
+                              <span className="text-gray-500 dark:text-gray-400">
+                                GPA:
+                              </span>{" "}
+                              <span className="font-semibold">
+                                {m.gpa} / 10.0
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-gray-500 dark:text-gray-400">
+                              Notes
+                            </Label>
+                            <textarea
+                              className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background resize-none"
+                              rows={2}
+                              value={m.notes}
+                              onChange={(e) =>
+                                setMentees((prev) =>
+                                  prev.map((x) =>
+                                    x.id === m.id
+                                      ? { ...x, notes: e.target.value }
+                                      : x,
+                                  ),
+                                )
+                              }
+                              placeholder="Add notes about this mentee..."
+                              data-ocid={`faculty_portal.mentorship.notes_textarea.${i + 1}`}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* CONFERENCES */}
+            <TabsContent value="conferences">
+              <div className="space-y-4">
+                <h2 className="text-lg font-bold">
+                  Academic Conferences & Seminars
+                </h2>
+                {conferences.map((conf, i) => (
+                  <Card
+                    key={conf.id}
+                    data-ocid={`faculty_portal.conferences.item.${i + 1}`}
+                  >
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <p className="font-semibold text-sm">{conf.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            {conf.date} · {conf.location}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            Registration deadline: {conf.deadline}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          {confRegistered.has(conf.id) ? (
+                            <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                              Registered ✓
+                            </Badge>
+                          ) : (
+                            <Button
+                              size="sm"
+                              className="bg-black text-white hover:bg-gray-900 text-xs"
+                              onClick={() =>
+                                setConfForms((p) => ({
+                                  ...p,
+                                  [conf.id]: { paperTitle: "", showing: true },
+                                }))
+                              }
+                              data-ocid={`faculty_portal.conferences.button.${i + 1}`}
+                            >
+                              Register
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      {confForms[conf.id]?.showing &&
+                        !confRegistered.has(conf.id) && (
+                          <div className="mt-3 pt-3 border-t space-y-2">
+                            <div>
+                              <Label className="text-xs text-gray-500 dark:text-gray-400">
+                                Paper Title (Optional)
+                              </Label>
+                              <Input
+                                className="mt-1 h-8 text-sm"
+                                value={confForms[conf.id]?.paperTitle || ""}
+                                onChange={(e) =>
+                                  setConfForms((p) => ({
+                                    ...p,
+                                    [conf.id]: {
+                                      ...p[conf.id],
+                                      paperTitle: e.target.value,
+                                    },
+                                  }))
+                                }
+                                placeholder="Enter paper/presentation title..."
+                                data-ocid={`faculty_portal.conferences.paper_input.${i + 1}`}
+                              />
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                className="bg-black text-white hover:bg-gray-900 text-xs"
+                                onClick={() => {
+                                  setConfRegistered((prev) => {
+                                    const n = new Set(prev);
+                                    n.add(conf.id);
+                                    return n;
+                                  });
+                                  setConfForms((p) => ({
+                                    ...p,
+                                    [conf.id]: {
+                                      ...p[conf.id],
+                                      showing: false,
+                                    },
+                                  }));
+                                }}
+                                data-ocid={`faculty_portal.conferences.confirm_button.${i + 1}`}
+                              >
+                                Confirm Registration
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-xs"
+                                onClick={() =>
+                                  setConfForms((p) => ({
+                                    ...p,
+                                    [conf.id]: {
+                                      ...p[conf.id],
+                                      showing: false,
+                                    },
+                                  }))
+                                }
+                                data-ocid={`faculty_portal.conferences.cancel_button.${i + 1}`}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </main>
+      </div>
 
       <SmartAssistant onNavigate={handleChatNavigate} currentPortal="faculty" />
     </div>

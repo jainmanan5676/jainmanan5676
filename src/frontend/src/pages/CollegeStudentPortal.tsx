@@ -2030,6 +2030,395 @@ export default function CollegeStudentPortal({
             <TabsContent value="transcript">
               <TranscriptTab studentName={studentName} />
             </TabsContent>
+            {/* GPA CALCULATOR */}
+            <TabsContent value="gpa">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>GPA Calculator</CardTitle>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Calculated GPA
+                      </p>
+                      <p className="text-3xl font-bold">{computedGpa}</p>
+                      <p className="text-xs text-gray-400">out of 10.00</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="dark:text-gray-300">
+                          Course
+                        </TableHead>
+                        <TableHead className="text-center">Credits</TableHead>
+                        <TableHead className="text-center">Grade</TableHead>
+                        <TableHead className="text-center">Points</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {gpaRows.map((row, i) => (
+                        <TableRow
+                          key={row.code}
+                          data-ocid={`student_portal.gpa.item.${i + 1}`}
+                        >
+                          <TableCell className="font-medium text-sm">
+                            {row.name}
+                          </TableCell>
+                          <TableCell className="text-center text-sm">
+                            {row.credits}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <select
+                              className="text-sm border border-border rounded px-2 py-0.5 bg-background"
+                              value={row.grade}
+                              onChange={(e) =>
+                                setGpaRows((prev) =>
+                                  prev.map((r, j) =>
+                                    j === i
+                                      ? { ...r, grade: e.target.value }
+                                      : r,
+                                  ),
+                                )
+                              }
+                              data-ocid={`student_portal.gpa.grade_select.${i + 1}`}
+                            >
+                              {Object.keys(gpaGrades).map((g) => (
+                                <option key={g}>{g}</option>
+                              ))}
+                            </select>
+                          </TableCell>
+                          <TableCell className="text-center text-sm font-semibold">
+                            {(
+                              (gpaGrades[row.grade] || 0) * row.credits
+                            ).toFixed(1)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* CAMPUS RSVP */}
+            <TabsContent value="campus-rsvp">
+              <div className="space-y-4">
+                <h2 className="text-lg font-bold">Campus Events</h2>
+                {campusEvents.map((ev, i) => (
+                  <Card
+                    key={ev.id}
+                    data-ocid={`student_portal.campus_rsvp.item.${i + 1}`}
+                  >
+                    <CardContent className="pt-4 flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold">{ev.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {ev.date} · {ev.venue}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          {ev.seats} seats available
+                        </p>
+                      </div>
+                      {rsvpSet.has(ev.id) ? (
+                        <Badge className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+                          Registered ✓
+                        </Badge>
+                      ) : (
+                        <Button
+                          size="sm"
+                          className="bg-primary text-primary-foreground hover:bg-primary/90"
+                          onClick={() =>
+                            setRsvpSet((prev) => {
+                              const n = new Set(prev);
+                              n.add(ev.id);
+                              return n;
+                            })
+                          }
+                          data-ocid={`student_portal.campus_rsvp.button.${i + 1}`}
+                        >
+                          RSVP
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* GRIEVANCE */}
+            <TabsContent value="grievance">
+              <div className="space-y-4">
+                <Card>
+                  <CardContent className="pt-5 space-y-3">
+                    <h3 className="font-semibold">Submit Grievance</h3>
+                    <div>
+                      <Label className="text-xs text-gray-500 dark:text-gray-400">
+                        Category
+                      </Label>
+                      <select
+                        className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background"
+                        value={grievanceForm.category}
+                        onChange={(e) =>
+                          setGrievanceForm((p) => ({
+                            ...p,
+                            category: e.target.value,
+                          }))
+                        }
+                        data-ocid="student_portal.grievance.category_select"
+                      >
+                        {[
+                          "Academic",
+                          "Administrative",
+                          "Infrastructure",
+                          "Other",
+                        ].map((c) => (
+                          <option key={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500 dark:text-gray-400">
+                        Description
+                      </Label>
+                      <textarea
+                        className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background resize-none"
+                        rows={4}
+                        value={grievanceForm.desc}
+                        onChange={(e) =>
+                          setGrievanceForm((p) => ({
+                            ...p,
+                            desc: e.target.value,
+                          }))
+                        }
+                        placeholder="Describe your grievance in detail..."
+                        data-ocid="student_portal.grievance.textarea"
+                      />
+                    </div>
+                    <Button
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      onClick={() => {
+                        if (!grievanceForm.desc) return;
+                        setGrievances((prev) => [
+                          ...prev,
+                          {
+                            id: Date.now(),
+                            category: grievanceForm.category,
+                            desc: grievanceForm.desc,
+                            status: "Pending",
+                          },
+                        ]);
+                        setGrievanceForm((p) => ({ ...p, desc: "" }));
+                      }}
+                      data-ocid="student_portal.grievance.submit_button"
+                    >
+                      Submit Grievance
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-5">
+                    <h3 className="font-semibold mb-3">My Grievances</h3>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="dark:text-gray-300">
+                            Category
+                          </TableHead>
+                          <TableHead className="dark:text-gray-300">
+                            Description
+                          </TableHead>
+                          <TableHead className="dark:text-gray-300">
+                            Status
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {grievances.map((g, i) => (
+                          <TableRow
+                            key={g.id}
+                            data-ocid={`student_portal.grievance.item.${i + 1}`}
+                          >
+                            <TableCell className="text-sm">
+                              {g.category}
+                            </TableCell>
+                            <TableCell className="text-sm max-w-[200px] truncate">
+                              {g.desc}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                className={
+                                  g.status === "Resolved"
+                                    ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+                                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+                                }
+                              >
+                                {g.status}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* COURSE REQUESTS */}
+            <TabsContent value="course-requests">
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant={courseReqTab === "add" ? "default" : "outline"}
+                    className={
+                      courseReqTab === "add" ? "bg-black text-white" : ""
+                    }
+                    onClick={() => setCourseReqTab("add")}
+                    data-ocid="student_portal.course_requests.add_tab"
+                  >
+                    Add Request
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={courseReqTab === "drop" ? "default" : "outline"}
+                    className={
+                      courseReqTab === "drop" ? "bg-black text-white" : ""
+                    }
+                    onClick={() => setCourseReqTab("drop")}
+                    data-ocid="student_portal.course_requests.drop_tab"
+                  >
+                    Drop Request
+                  </Button>
+                </div>
+                <Card>
+                  <CardContent className="pt-5 space-y-3">
+                    <h3 className="font-semibold">
+                      {courseReqTab === "add"
+                        ? "Add Course Request"
+                        : "Drop Course Request"}
+                    </h3>
+                    <div>
+                      <Label className="text-xs text-gray-500 dark:text-gray-400">
+                        Course
+                      </Label>
+                      <select
+                        className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background"
+                        value={courseReqForm.course}
+                        onChange={(e) =>
+                          setCourseReqForm((p) => ({
+                            ...p,
+                            course: e.target.value,
+                          }))
+                        }
+                        data-ocid="student_portal.course_requests.course_select"
+                      >
+                        <option value="">Select course...</option>
+                        {courses.map((c) => (
+                          <option key={c.code} value={c.name}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500 dark:text-gray-400">
+                        Reason
+                      </Label>
+                      <textarea
+                        className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background resize-none"
+                        rows={3}
+                        value={courseReqForm.reason}
+                        onChange={(e) =>
+                          setCourseReqForm((p) => ({
+                            ...p,
+                            reason: e.target.value,
+                          }))
+                        }
+                        placeholder="Reason for request..."
+                        data-ocid="student_portal.course_requests.reason_textarea"
+                      />
+                    </div>
+                    <Button
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      onClick={() => {
+                        if (!courseReqForm.course) return;
+                        setCourseRequests((prev) => [
+                          ...prev,
+                          {
+                            id: Date.now(),
+                            type: courseReqTab === "add" ? "Add" : "Drop",
+                            course: courseReqForm.course,
+                            reason: courseReqForm.reason,
+                            status: "Pending",
+                          },
+                        ]);
+                        setCourseReqForm({ course: "", reason: "" });
+                      }}
+                      data-ocid="student_portal.course_requests.submit_button"
+                    >
+                      Submit Request
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-5">
+                    <h3 className="font-semibold mb-3">Pending Requests</h3>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="dark:text-gray-300">
+                            Type
+                          </TableHead>
+                          <TableHead className="dark:text-gray-300">
+                            Course
+                          </TableHead>
+                          <TableHead className="dark:text-gray-300">
+                            Reason
+                          </TableHead>
+                          <TableHead className="dark:text-gray-300">
+                            Status
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {courseRequests.map((r, i) => (
+                          <TableRow
+                            key={r.id}
+                            data-ocid={`student_portal.course_requests.item.${i + 1}`}
+                          >
+                            <TableCell>
+                              <Badge
+                                className={
+                                  r.type === "Add"
+                                    ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+                                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+                                }
+                              >
+                                {r.type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              {r.course}
+                            </TableCell>
+                            <TableCell className="text-sm text-gray-500 dark:text-gray-400 max-w-[150px] truncate">
+                              {r.reason}
+                            </TableCell>
+                            <TableCell>
+                              <Badge className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+                                {r.status}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
           </Tabs>
         </main>
       </div>
@@ -2174,363 +2563,6 @@ export default function CollegeStudentPortal({
           )}
         </DialogContent>
       </Dialog>
-
-      {/* GPA CALCULATOR */}
-      <TabsContent value="gpa">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>GPA Calculator</CardTitle>
-              <div className="text-right">
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Calculated GPA
-                </p>
-                <p className="text-3xl font-bold">{computedGpa}</p>
-                <p className="text-xs text-gray-400">out of 10.00</p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="dark:text-gray-300">Course</TableHead>
-                  <TableHead className="text-center">Credits</TableHead>
-                  <TableHead className="text-center">Grade</TableHead>
-                  <TableHead className="text-center">Points</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {gpaRows.map((row, i) => (
-                  <TableRow
-                    key={row.code}
-                    data-ocid={`student_portal.gpa.item.${i + 1}`}
-                  >
-                    <TableCell className="font-medium text-sm">
-                      {row.name}
-                    </TableCell>
-                    <TableCell className="text-center text-sm">
-                      {row.credits}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <select
-                        className="text-sm border border-border rounded px-2 py-0.5 bg-background"
-                        value={row.grade}
-                        onChange={(e) =>
-                          setGpaRows((prev) =>
-                            prev.map((r, j) =>
-                              j === i ? { ...r, grade: e.target.value } : r,
-                            ),
-                          )
-                        }
-                        data-ocid={`student_portal.gpa.grade_select.${i + 1}`}
-                      >
-                        {Object.keys(gpaGrades).map((g) => (
-                          <option key={g}>{g}</option>
-                        ))}
-                      </select>
-                    </TableCell>
-                    <TableCell className="text-center text-sm font-semibold">
-                      {((gpaGrades[row.grade] || 0) * row.credits).toFixed(1)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      {/* CAMPUS RSVP */}
-      <TabsContent value="campus-rsvp">
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold">Campus Events</h2>
-          {campusEvents.map((ev, i) => (
-            <Card
-              key={ev.id}
-              data-ocid={`student_portal.campus_rsvp.item.${i + 1}`}
-            >
-              <CardContent className="pt-4 flex items-center justify-between">
-                <div>
-                  <p className="font-semibold">{ev.name}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {ev.date} · {ev.venue}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {ev.seats} seats available
-                  </p>
-                </div>
-                {rsvpSet.has(ev.id) ? (
-                  <Badge className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
-                    Registered ✓
-                  </Badge>
-                ) : (
-                  <Button
-                    size="sm"
-                    className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    onClick={() =>
-                      setRsvpSet((prev) => {
-                        const n = new Set(prev);
-                        n.add(ev.id);
-                        return n;
-                      })
-                    }
-                    data-ocid={`student_portal.campus_rsvp.button.${i + 1}`}
-                  >
-                    RSVP
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </TabsContent>
-
-      {/* GRIEVANCE */}
-      <TabsContent value="grievance">
-        <div className="space-y-4">
-          <Card>
-            <CardContent className="pt-5 space-y-3">
-              <h3 className="font-semibold">Submit Grievance</h3>
-              <div>
-                <Label className="text-xs text-gray-500 dark:text-gray-400">
-                  Category
-                </Label>
-                <select
-                  className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background"
-                  value={grievanceForm.category}
-                  onChange={(e) =>
-                    setGrievanceForm((p) => ({
-                      ...p,
-                      category: e.target.value,
-                    }))
-                  }
-                  data-ocid="student_portal.grievance.category_select"
-                >
-                  {[
-                    "Academic",
-                    "Administrative",
-                    "Infrastructure",
-                    "Other",
-                  ].map((c) => (
-                    <option key={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <Label className="text-xs text-gray-500 dark:text-gray-400">
-                  Description
-                </Label>
-                <textarea
-                  className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background resize-none"
-                  rows={4}
-                  value={grievanceForm.desc}
-                  onChange={(e) =>
-                    setGrievanceForm((p) => ({ ...p, desc: e.target.value }))
-                  }
-                  placeholder="Describe your grievance in detail..."
-                  data-ocid="student_portal.grievance.textarea"
-                />
-              </div>
-              <Button
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-                onClick={() => {
-                  if (!grievanceForm.desc) return;
-                  setGrievances((prev) => [
-                    ...prev,
-                    {
-                      id: Date.now(),
-                      category: grievanceForm.category,
-                      desc: grievanceForm.desc,
-                      status: "Pending",
-                    },
-                  ]);
-                  setGrievanceForm((p) => ({ ...p, desc: "" }));
-                }}
-                data-ocid="student_portal.grievance.submit_button"
-              >
-                Submit Grievance
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-5">
-              <h3 className="font-semibold mb-3">My Grievances</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="dark:text-gray-300">
-                      Category
-                    </TableHead>
-                    <TableHead className="dark:text-gray-300">
-                      Description
-                    </TableHead>
-                    <TableHead className="dark:text-gray-300">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {grievances.map((g, i) => (
-                    <TableRow
-                      key={g.id}
-                      data-ocid={`student_portal.grievance.item.${i + 1}`}
-                    >
-                      <TableCell className="text-sm">{g.category}</TableCell>
-                      <TableCell className="text-sm max-w-[200px] truncate">
-                        {g.desc}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={
-                            g.status === "Resolved"
-                              ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
-                          }
-                        >
-                          {g.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
-      </TabsContent>
-
-      {/* COURSE REQUESTS */}
-      <TabsContent value="course-requests">
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant={courseReqTab === "add" ? "default" : "outline"}
-              className={courseReqTab === "add" ? "bg-black text-white" : ""}
-              onClick={() => setCourseReqTab("add")}
-              data-ocid="student_portal.course_requests.add_tab"
-            >
-              Add Request
-            </Button>
-            <Button
-              size="sm"
-              variant={courseReqTab === "drop" ? "default" : "outline"}
-              className={courseReqTab === "drop" ? "bg-black text-white" : ""}
-              onClick={() => setCourseReqTab("drop")}
-              data-ocid="student_portal.course_requests.drop_tab"
-            >
-              Drop Request
-            </Button>
-          </div>
-          <Card>
-            <CardContent className="pt-5 space-y-3">
-              <h3 className="font-semibold">
-                {courseReqTab === "add"
-                  ? "Add Course Request"
-                  : "Drop Course Request"}
-              </h3>
-              <div>
-                <Label className="text-xs text-gray-500 dark:text-gray-400">
-                  Course
-                </Label>
-                <select
-                  className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background"
-                  value={courseReqForm.course}
-                  onChange={(e) =>
-                    setCourseReqForm((p) => ({ ...p, course: e.target.value }))
-                  }
-                  data-ocid="student_portal.course_requests.course_select"
-                >
-                  <option value="">Select course...</option>
-                  {courses.map((c) => (
-                    <option key={c.code} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <Label className="text-xs text-gray-500 dark:text-gray-400">
-                  Reason
-                </Label>
-                <textarea
-                  className="w-full mt-1 text-sm border border-border rounded-md px-3 py-1.5 bg-background resize-none"
-                  rows={3}
-                  value={courseReqForm.reason}
-                  onChange={(e) =>
-                    setCourseReqForm((p) => ({ ...p, reason: e.target.value }))
-                  }
-                  placeholder="Reason for request..."
-                  data-ocid="student_portal.course_requests.reason_textarea"
-                />
-              </div>
-              <Button
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-                onClick={() => {
-                  if (!courseReqForm.course) return;
-                  setCourseRequests((prev) => [
-                    ...prev,
-                    {
-                      id: Date.now(),
-                      type: courseReqTab === "add" ? "Add" : "Drop",
-                      course: courseReqForm.course,
-                      reason: courseReqForm.reason,
-                      status: "Pending",
-                    },
-                  ]);
-                  setCourseReqForm({ course: "", reason: "" });
-                }}
-                data-ocid="student_portal.course_requests.submit_button"
-              >
-                Submit Request
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-5">
-              <h3 className="font-semibold mb-3">Pending Requests</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="dark:text-gray-300">Type</TableHead>
-                    <TableHead className="dark:text-gray-300">Course</TableHead>
-                    <TableHead className="dark:text-gray-300">Reason</TableHead>
-                    <TableHead className="dark:text-gray-300">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {courseRequests.map((r, i) => (
-                    <TableRow
-                      key={r.id}
-                      data-ocid={`student_portal.course_requests.item.${i + 1}`}
-                    >
-                      <TableCell>
-                        <Badge
-                          className={
-                            r.type === "Add"
-                              ? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
-                          }
-                        >
-                          {r.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-sm">{r.course}</TableCell>
-                      <TableCell className="text-sm text-gray-500 dark:text-gray-400 max-w-[150px] truncate">
-                        {r.reason}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
-                          {r.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
-      </TabsContent>
 
       <SmartAssistant onNavigate={handleChatNavigate} currentPortal="college" />
     </div>
